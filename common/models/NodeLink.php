@@ -2,7 +2,10 @@
 
 namespace common\models;
 
+use common\components\Helper;
 use Yii;
+use yii\helpers\HtmlPurifier;
+use yii\helpers\Markdown;
 
 /**
  * This is the model class for table "node_link".
@@ -58,11 +61,18 @@ class NodeLink extends \yii\db\ActiveRecord
     //获取节点推荐链接信息，有缓存就获取缓存
     static function NodeLink($node)
     {
-        if(!$NodeLink = Yii::$app->cache->get('NodeLink'.$node))
+        $NodeLink = Yii::$app->cache->get('NodeLink'.$node);
+        if(!isset($NodeLink))
         {
             $NodeLink = NodeLink::find()->where(['node_id' => $node])->asArray()->all();
             Yii::$app->cache->set('NodeLink'.$node, $NodeLink, 0);
         }
         return $NodeLink;
+    }
+
+    public function afterFind()
+    {
+        $this->content  = Helper::autoLink(HtmlPurifier::process(Markdown::process($this->content, 'gfm-comment')));
+        parent::afterFind();
     }
 }

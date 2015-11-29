@@ -1,7 +1,5 @@
 <?php
 
-use yii\helpers\Markdown;
-
 $NodeAd = \common\models\NodeAd::NodeAd($node);
 
 ?>
@@ -9,7 +7,7 @@ $NodeAd = \common\models\NodeAd::NodeAd($node);
 <section>
     <div class="block-content markdown-content">
         <?php foreach ($NodeAd as $ad):?>
-        <?= Markdown::process($ad['content'], 'gfm')?>
+        <?= $ad['content']?>
         <?php endforeach?>
     </div>
 </section>

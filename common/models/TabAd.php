@@ -2,7 +2,10 @@
 
 namespace common\models;
 
+use common\components\Helper;
 use Yii;
+use yii\helpers\HtmlPurifier;
+use yii\helpers\Markdown;
 
 /**
  * This is the model class for table "tab_ad".
@@ -60,7 +63,8 @@ class TabAd extends \yii\db\ActiveRecord
     //获取Tab广告信息，有缓存就获取缓存
     static function TabAd($tab)
     {
-        if(!$TabAd = Yii::$app->cache->get('TabAd'.$tab))
+        $TabAd = Yii::$app->cache->get('TabAd'.$tab);
+        if(!isset($TabAd))
         {
             $TabModel = Tab::findOne(['enname' => $tab]);
             if(!empty($TabModel->id)) {
@@ -72,5 +76,11 @@ class TabAd extends \yii\db\ActiveRecord
             }
         }
         return $TabAd;
+    }
+
+    public function afterFind()
+    {
+        $this->content  = Helper::autoLink(HtmlPurifier::process(Markdown::process($this->content, 'gfm-comment')));
+        parent::afterFind();
     }
 }

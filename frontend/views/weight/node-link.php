@@ -1,7 +1,5 @@
 <?php
 
-use yii\helpers\Markdown;
-
 $NodeLink = \common\models\NodeLink::NodeLink($node);
 
 ?>
@@ -9,7 +7,7 @@ $NodeLink = \common\models\NodeLink::NodeLink($node);
 <section>
     <div class="block-content markdown-content">
         <?php foreach ($NodeLink as $link):?>
-        <?= Markdown::process($link['content'], 'gfm')?>
+        <?= $link['content']?>
         <?php endforeach?>
     </div>
 </section>

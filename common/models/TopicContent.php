@@ -2,7 +2,10 @@
 
 namespace common\models;
 
+use common\components\Helper;
 use Yii;
+use yii\helpers\HtmlPurifier;
+use yii\helpers\Markdown;
 
 /**
  * This is the model class for table "topic_content".
@@ -44,8 +47,8 @@ class TopicContent extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'topic_id' => '主题ID',
-            'content' => '主题正文',
+            'topic_id' => '建议ID',
+            'content' => '正文',
             'is_append' => '是否追加',
             'created' => '创建时间',
         ];
@@ -67,5 +70,11 @@ class TopicContent extends \yii\db\ActiveRecord
     {
         if(empty($this->content)) $this->content = '';
         return parent::beforeSave($insert);
+    }
+
+    public function afterFind()
+    {
+        $this->content  = Helper::autoLink(HtmlPurifier::process(Markdown::process($this->content, 'gfm-comment')));
+        parent::afterFind();
     }
 }
